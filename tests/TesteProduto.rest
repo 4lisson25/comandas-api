@@ -1,0 +1,34 @@
+### Verbo GET – listar todos os produtos
+GET http://localhost:8000/produto/ HTTP/1.1
+
+
+### Verbo GET – listar um produto pelo ID
+GET http://localhost:8000/produto/10 HTTP/1.1
+
+
+### Verbo POST – adicionar produto
+POST http://127.0.0.1:8000/produto/ HTTP/1.1
+content-type: application/json
+
+{
+    "nome": "Notebook Dell",
+    "descricao": "Notebook i5 16GB RAM",
+    "cpf": "00000000000",
+    "foto": "MTIzNA==",
+    "valor_unitario": 3500
+}
+
+### Verbo PUT – atualizar produto
+PUT http://127.0.0.1:8000/produto/2 HTTP/1.1
+content-type: application/json
+
+{
+    "nome": "Notebook Dell Atualizado",
+    "descricao": "Notebook i7 16GB RAM",
+    "cpf": "00000000000",
+    "foto": "MTIzNA==",
+    "valor_unitario": 4200
+}
+
+### Verbo DELETE – excluir produto
+DELETE http://127.0.0.1:8000/produto/3 HTTP/1.1
