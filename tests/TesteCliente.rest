@@ -1,9 +1,11 @@
+#Alisson Rafael da Cruz Velho
+#http://localhost:8000/docs#/
 ### Verbo GET – listar todos os clientes
 GET http://localhost:8000/cliente/ HTTP/1.1
 
 
 ### Verbo GET – listar um cliente pelo ID
-GET http://localhost:8000/cliente/10 HTTP/1.1
+GET http://localhost:8000/cliente/1 HTTP/1.1
 
 
 ### Verbo POST – adicionar cliente
@@ -11,9 +13,9 @@ POST http://127.0.0.1:8000/cliente/ HTTP/1.1
 content-type: application/json
 
 {
-    "nome": "João da Silva",
-    "cpf": "12345678900",
-    "telefone": "49999999999"
+    "nome": "Alisson Rafael da Cruz velho turma 1",
+    "cpf": "12344p00f30",
+    "telefone": "49995599999"
 }
 
 
@@ -23,10 +25,10 @@ content-type: application/json
 
 {
     "nome": "Alisson Rafael da cruz velho",
-    "cpf": "12345678900",
-    "telefone": "49988888888"
+    "cpf": "13345648900",
+    "telefone": "49988888800"
 }
 
 
 ### Verbo DELETE – excluir cliente
-DELETE http://127.0.0.1:8000/cliente/3 HTTP/1.1
+DELETE http://127.0.0.1:8000/cliente/2 HTTP/1.1
