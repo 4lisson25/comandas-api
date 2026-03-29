@@ -6,25 +6,25 @@ from typing import List
 from domain.schemas.ProdutoSchema import (
     ProdutoCreate,
     ProdutoUpdate,
-    ProdutoResponse
+    ProdutoResponse,
+    ProdutoResponsePublico
 )
+from domain.schemas.AuthSchema import ProdutoAuth
 
 # ORM
 from infra.orm.ProdutoModel import ProdutoDB
 
 # Database
 from infra.database import get_db
+from infra.dependencies import get_current_active_user, require_group
 
 router = APIRouter()
 
 # GET TODOS PRODUTOS
-@router.get(
-    "/produto/",
-    response_model=List[ProdutoResponse],
-    tags=["Produto"],
-    status_code=status.HTTP_200_OK
-)
-async def get_produtos(db: Session = Depends(get_db)):
+@router.get("/produto/publico", response_model=List[ProdutoResponsePublico], tags=["Produto"], status_code=status.HTTP_200_OK)
+async def get_produtos(db: Session = Depends(get_db)
+):
+    """Retorna todos os produtos, autenticado"""   
     try:
         produtos = db.query(ProdutoDB).all()
         return produtos
@@ -43,8 +43,10 @@ async def get_produtos(db: Session = Depends(get_db)):
     tags=["Produto"],
     status_code=status.HTTP_200_OK
 )
-async def get_produto(id: int, db: Session = Depends(get_db)):
-
+async def get_produto(id: int, db: Session = Depends(get_db),
+current_user: ProdutoAuth = Depends(get_current_active_user)
+):
+    """Retorna um produto específico pelo ID, autenticado"""
     try:
         produto = db.query(ProdutoDB).filter(
             ProdutoDB.id == id
@@ -74,8 +76,10 @@ async def get_produto(id: int, db: Session = Depends(get_db)):
     tags=["Produto"],
     status_code=status.HTTP_201_CREATED
 )
-async def post_produto(produto_data: ProdutoCreate, db: Session = Depends(get_db)):
-
+async def post_produto(produto_data: ProdutoCreate, db: Session = Depends(get_db),
+current_user: ProdutoAuth = Depends(require_group([1]))
+):
+    """Cria um novo produto, autenticado e grupo 1"""
     try:
 
         novo_produto = ProdutoDB(
@@ -109,8 +113,10 @@ async def post_produto(produto_data: ProdutoCreate, db: Session = Depends(get_db
     tags=["Produto"],
     status_code=status.HTTP_200_OK
 )
-async def put_produto(id: int, produto_data: ProdutoUpdate, db: Session = Depends(get_db)):
-
+async def put_produto(id: int, produto_data: ProdutoUpdate, db: Session = Depends(get_db),
+current_user: ProdutoAuth = Depends(require_group([1]))
+):
+    """Atualiza um produto existente, precisa estar autenticado e grupo 1"""
     try:
 
         produto = db.query(ProdutoDB).filter(
@@ -151,8 +157,10 @@ async def put_produto(id: int, produto_data: ProdutoUpdate, db: Session = Depend
     tags=["Produto"],
     status_code=status.HTTP_200_OK
 )
-async def delete_produto(id: int, db: Session = Depends(get_db)):
-
+async def delete_produto(id: int, db: Session = Depends(get_db),
+current_user: ProdutoAuth = Depends(require_group([1]))
+):
+    """Remove um produto, precisa estar autenticado e grupo 1"""
     try:
 
         produto = db.query(ProdutoDB).filter(

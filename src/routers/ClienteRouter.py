@@ -8,12 +8,14 @@ from domain.schemas.ClienteSchema import (
     ClienteResponse,
     ClienteUpdate
 )
+from domain.schemas.AuthSchema import ClienteAuth
 
 # ORM
 from infra.orm.ClienteModel import ClienteDB
 
 # Database
 from infra.database import get_db
+from infra.dependencies import get_current_active_user, require_group
 
 router = APIRouter()
 
@@ -24,7 +26,11 @@ router = APIRouter()
     tags=["Cliente"],
     status_code=status.HTTP_200_OK
 )
-async def get_clientes(db: Session = Depends(get_db)):
+async def get_cliente(
+db: Session = Depends(get_db),
+current_user: ClienteAuth = Depends(get_current_active_user)
+):
+    """Retorna todos os clientes - Protegido por autenticação"""    
     try:
         clientes = db.query(ClienteDB).all()
         return clientes
@@ -43,7 +49,10 @@ async def get_clientes(db: Session = Depends(get_db)):
     tags=["Cliente"],
     status_code=status.HTTP_200_OK
 )
-async def get_cliente(id: int, db: Session = Depends(get_db)):
+async def get_cliente(id: int, db: Session = Depends(get_db),
+current_user: ClienteAuth = Depends(get_current_active_user)
+):
+    """Retorna um cliente específico pelo ID"""
 
     try:
         cliente = db.query(ClienteDB).filter(ClienteDB.id == id).first()
@@ -72,7 +81,10 @@ async def get_cliente(id: int, db: Session = Depends(get_db)):
     tags=["Cliente"],
     status_code=status.HTTP_201_CREATED
 )
-async def post_cliente(cliente_data: ClienteCreate, db: Session = Depends(get_db)):
+async def post_cliente(cliente_data: ClienteCreate, db: Session = Depends(get_db),
+current_user: ClienteAuth = Depends(require_group([1,3]))
+):
+    """Cria um novo cliente, precisa estar autenticado e grupo 1 ou 3"""
 
     try:
 
@@ -118,7 +130,10 @@ async def post_cliente(cliente_data: ClienteCreate, db: Session = Depends(get_db
     tags=["Cliente"],
     status_code=status.HTTP_200_OK
 )
-async def put_cliente(id: int, cliente_data: ClienteUpdate, db: Session = Depends(get_db)):
+async def put_cliente(id: int, cliente_data: ClienteUpdate, db: Session = Depends(get_db),
+current_user: ClienteAuth = Depends(require_group([1,3]))
+):
+    """Atualiza um cliente existente, precisa estar autenticado e em grupo 1 ou 3"""
 
     try:
 
@@ -174,8 +189,10 @@ async def put_cliente(id: int, cliente_data: ClienteUpdate, db: Session = Depend
     status_code=status.HTTP_200_OK
 )
 
-async def delete_cliente(id: int, db: Session = Depends(get_db)):
-    """Remove um cliente"""
+async def delete_cliente(id: int, db: Session = Depends(get_db),
+current_user: ClienteAuth = Depends(require_group([1]))
+):
+    """Remove um cliente, precisa autenticação e grupo 1"""
     try:
 
         cliente = db.query(ClienteDB).filter(
