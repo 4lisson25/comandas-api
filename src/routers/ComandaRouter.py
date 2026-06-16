@@ -150,7 +150,7 @@ async def get_comandas(
                 cliente=ClienteResponse(id=cliente.id, nome=cliente.nome,
                                         cpf=cliente.cpf, telefone=cliente.telefone) if cliente else None
             )
-        comandas_response.append(comanda_response)
+            comandas_response.append(comanda_response)
 
         return comandas_response
 

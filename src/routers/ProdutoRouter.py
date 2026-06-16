@@ -25,7 +25,7 @@ router = APIRouter()
 
 # GET TODOS PRODUTOS
 @router.get("/produto/publico", response_model=List[ProdutoResponsePublico], tags=["Produto"], status_code=status.HTTP_200_OK)
-async def get_produtos(db: Session = Depends(get_db)
+async def get_produto_publico(db: Session = Depends(get_db)
 ):
     """Retorna todos os produtos, autenticado"""   
     try:
@@ -38,6 +38,22 @@ async def get_produtos(db: Session = Depends(get_db)
             detail=f"Erro ao buscar produtos: {str(e)}"
         )
 
+@router.get("/produto/", response_model=List[ProdutoResponse], tags=["Produto"], status_code=status.HTTP_200_OK)
+async def get_produtos(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: ProdutoAuth = Depends(get_current_active_user)
+):
+    """Retorna todos os produtos, autenticado"""
+    try:
+        produtos = db.query(ProdutoDB).all()
+        return produtos
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao buscar produtos: {str(e)}"
+        )
 
 # GET PRODUTO POR ID
 @router.get(

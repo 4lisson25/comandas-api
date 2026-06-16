@@ -63,7 +63,7 @@ async def get_funcionario(
             )
         
 
-            return funcionario
+        return funcionario
         
     except HTTPException:
             raise

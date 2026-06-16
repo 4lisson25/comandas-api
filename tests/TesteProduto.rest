@@ -1,14 +1,14 @@
 #Alisson Rafael da Cruz Velho
 #http://localhost:8000/docs#/ Link de acesso da página principal.
 ### Verbo GET – listar todos os produtos
-GET http://localhost:8000/produto/ HTTP/1.1
+GET http://localhost:8443/produto/ HTTP/1.1
 
 
 ### Verbo GET – listar um produto pelo ID
 GET http://localhost:8000/produto/1 HTTP/1.1
 
 
-### Verbo POST – adicionar produto
+### Verbo POST –eaea adicionar produto
 POST http://127.0.0.1:8000/produto/ HTTP/1.1
 content-type: application/json
 
