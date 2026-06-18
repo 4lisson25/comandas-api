@@ -1,0 +1,66 @@
+#Alisson Rafael da Cruz Velho
+
+### Token JWT
+@access_token = SEU_TOKEN_AQUI
+
+
+##################################################
+# DASHBOARD
+##################################################
+
+### Listar comandas abertas para recebimento
+GET http://localhost:8000/recebimento/dashboard
+Authorization: Bearer {{access_token}}
+
+
+##################################################
+# DETALHE DAS COMANDAS
+##################################################
+
+### Detalhar uma comanda
+GET http://localhost:8000/recebimento/comandas/detalhe?comandas=1
+Authorization: Bearer {{access_token}}
+
+### Detalhar múltiplas comandas
+GET http://localhost:8000/recebimento/comandas/detalhe?comandas=1,2
+Authorization: Bearer {{access_token}}
+
+
+##################################################
+# RECEBIMENTO
+##################################################
+
+### Receber uma comanda
+POST http://localhost:8000/recebimento
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "comandas_ids": [1],
+    "cliente_id": 1,
+    "funcionario_id": 1,
+    "desconto_valor": 0,
+    "acrescimo_valor": 0
+}
+
+### Receber múltiplas comandas
+POST http://localhost:8000/recebimento
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "comandas_ids": [1,2],
+    "cliente_id": 1,
+    "funcionario_id": 1,
+    "desconto_valor": 10,
+    "acrescimo_valor": 5
+}
+
+
+##################################################
+# COMPROVANTE
+##################################################
+
+### Gerar comprovante do recebimento
+GET http://localhost:8000/recebimento/comprovante/1
+Authorization: Bearer {{access_token}}

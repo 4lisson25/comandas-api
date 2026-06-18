@@ -1,7 +1,7 @@
 #Alisson Rafael da Cruz Velho
 #http://localhost:8000/docs#/
 ### token gerado
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWQiOjcsImdydXBvIjoxLCJleHAiOjE3NzYxMTM0NjAsInR5cGUiOiJyZWZyZXNoIn0.rn_phhXL7-ksMUKQPEWn8X-3Pd-jKYZwVZD0Noix6fk
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaWQiOjEsImdydXBvIjoxLCJleHAiOjE3ODE2MTQ0NDIsInR5cGUiOiJhY2Nlc3MifQ.B1i48NPyGgyhr6Vk0-OxcFn7eQb31FDRfIJXff53DAg
 
 ### Listar ações e recursos já utilizados e disponíveis para filtro
 GET http://localhost:8000/auditoria/acoes

@@ -12,6 +12,7 @@ from routers import FuncionarioRouter
 from routers import ClienteRouter
 from routers import ProdutoRouter
 from routers import ComandaRouter
+from routers import RecebimentoRouter   
 from routers import HealthRouter
 
 # lifespan - ciclo de vida da aplicação
@@ -32,8 +33,22 @@ async def lifespan(app: FastAPI):
     print("API is shutting down")
 
 # cria a aplicação FastAPI com o contexto de vida
-app = FastAPI(lifespan=lifespan)
-#app = FastAPI() # Configuração
+tags_metadata = [
+    {"name": "Auditoria"},
+    {"name": "Autenticação"},
+    {"name": "Funcionário"},
+    {"name": "Cliente"},
+    {"name": "Produto"},
+    {"name": "Comanda"},
+    {"name": "Recebimento"},
+    {"name": "Auditoria"},
+    {"name": "Health"}
+]
+
+app = FastAPI(
+    lifespan=lifespan,
+    openapi_tags=tags_metadata
+)#app = FastAPI() # Configuração
 
 
 # Aplicar middleware de controle de acesso
@@ -69,6 +84,7 @@ app.include_router(FuncionarioRouter.router)
 app.include_router(ClienteRouter.router)
 app.include_router(ProdutoRouter.router)
 app.include_router(ComandaRouter.router)
+app.include_router(RecebimentoRouter.router)
 app.include_router(HealthRouter.router)
 
 if __name__ == "__main__":
