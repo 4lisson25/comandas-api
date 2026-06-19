@@ -86,6 +86,24 @@ async def dashboard_recebimento(
                 for item in produtos
             )
 
+            itens = []
+
+            for item in produtos:
+
+                produto_result = await db.execute(
+                    select(ProdutoDB)
+                    .where(
+                        ProdutoDB.id == item.produto_id
+                    )
+                )
+
+                produto = produto_result.scalar_one_or_none()
+
+                itens.append({
+                    "nome": produto.nome if produto else "Produto",
+                    "quantidade": item.quantidade
+                })
+
             retorno.append({
                 "id": comanda.id,
                 "comanda": comanda.comanda,
@@ -93,7 +111,8 @@ async def dashboard_recebimento(
                 "cliente": cliente.nome if cliente else None,
                 "status": comanda.status,
                 "total": total,
-                "data_hora": comanda.data_hora
+                "data_hora": comanda.data_hora,
+                "produtos": itens
             })
 
         return retorno
@@ -205,6 +224,7 @@ async def receber_comandas(
     try:
 
         subtotal = 0
+        cliente_id = None
 
         for comanda_id in recebimento.comandas_ids:
 
@@ -217,11 +237,15 @@ async def receber_comandas(
 
             comanda = result.scalar_one_or_none()
 
+
             if not comanda:
                 raise HTTPException(
                     status_code=404,
                     detail=f"Comanda {comanda_id} não encontrada"
                 )
+            
+            if cliente_id is None:
+                cliente_id = comanda.cliente_id
 
             if comanda.status != 0:
                 raise HTTPException(
@@ -261,7 +285,7 @@ async def receber_comandas(
             desconto_total=recebimento.desconto_valor,
             acrescimo_total=recebimento.acrescimo_valor,
             valor_final=valor_final,
-            cliente_id=recebimento.cliente_id,
+            cliente_id=cliente_id,
             funcionario_id=recebimento.funcionario_id
         )
 
@@ -291,7 +315,7 @@ async def receber_comandas(
             desconto_total=recebimento.desconto_valor,
             acrescimo_total=recebimento.acrescimo_valor,
             valor_final=valor_final,
-            cliente_id=recebimento.cliente_id,
+            cliente_id=cliente_id,
             funcionario_id=recebimento.funcionario_id,
             data_hora=datetime.now()
         )
@@ -336,7 +360,11 @@ async def gerar_comprovante(
 
         subtotal = 0
 
+        cliente_nome = None
+
         for comanda_id in ids:
+
+            
 
             result = await db.execute(
                 select(ComandaDB)
@@ -344,6 +372,9 @@ async def gerar_comprovante(
                     ComandaDB.id == comanda_id
                 )
             )
+
+            
+
 
             comanda = result.scalar_one_or_none()
 
@@ -356,6 +387,18 @@ async def gerar_comprovante(
                     ComandaProdutoDB.comanda_id == comanda.id
                 )
             )
+
+            if cliente_nome is None and comanda.cliente_id:
+
+                cliente_result = await db.execute(
+                    select(ClienteDB)
+                    .where(ClienteDB.id == comanda.cliente_id)
+                )
+
+                cliente = cliente_result.scalar_one_or_none()
+
+                if cliente:
+                    cliente_nome = cliente.nome
 
             produtos = produtos_result.scalars().all()
 
@@ -398,6 +441,7 @@ async def gerar_comprovante(
 
         return ComprovanteResponse(
             recebimento_id=0,
+            cliente=cliente_nome,
             comandas=lista_comandas,
             subtotal=subtotal,
             desconto=desconto,

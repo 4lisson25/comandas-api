@@ -30,6 +30,8 @@ class RecebimentoResponse(BaseModel):
 class ComprovanteResponse(BaseModel):
     recebimento_id: int
 
+    cliente: Optional[str] = None
+
     comandas: list
 
     subtotal: float
